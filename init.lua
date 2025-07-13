@@ -423,7 +423,7 @@ require('lazy').setup({
         --   },
         -- },
         defaults = {
-          file_ignore_patterns = { 'node_modules/.*', 'coverage', '__pycache__' },
+          file_ignore_patterns = { 'node_modules/.*', 'coverage', '__pycache__', '_build' },
         },
         -- pickers = {}
         extensions = {
@@ -487,6 +487,52 @@ require('lazy').setup({
         { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
       },
     },
+  },
+  { 'jfpedroza/neotest-elixir', ft = 'elixir' },
+  {
+    'nvim-neotest/neotest',
+    optional = true,
+    dependencies = { 'jfpedroza/neotest-elixir' },
+    opts = { adapters = { ['neotest-elixir'] = {} } },
+  },
+  {
+    'nvimtools/none-ls.nvim',
+    optional = true,
+    opts = function(_, opts)
+      local nls = require 'null-ls'
+      opts.sources = vim.list_extend(opts.sources or {}, {
+        nls.builtins.diagnostics.credo.with {
+          condition = function(utils)
+            return utils.root_has_file '.credo.exs'
+          end,
+        },
+      })
+    end,
+  },
+
+  -- 6) (opt) nvim-lint / Credo
+  {
+    'mfussenegger/nvim-lint',
+    optional = true,
+    opts = function(_, opts)
+      opts.linters_by_ft = { elixir = { 'credo' } }
+      opts.linters = {
+        credo = {
+          condition = function(ctx)
+            return vim.fs.find({ '.credo.exs' }, { path = ctx.filename, upward = true })[1]
+          end,
+        },
+      }
+    end,
+  },
+
+  -- 7) (opt) Livebook Markdown rendering
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    optional = true,
+    ft = function(_, ft)
+      return vim.list_extend(ft, { 'livebook' })
+    end,
   },
   {
     -- Main LSP Configuration
@@ -687,7 +733,6 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -699,8 +744,16 @@ require('lazy').setup({
         --
 
         -- by-esteban
-        jdtls = {},
 
+        elixirls = {},
+        jdtls = {},
+        pyright = {
+          before_init = function(_, config)
+            config.settings = config.settings or {}
+            config.settings.python = config.settings.python or {}
+            config.settings.python.pythonPath = '/Users/esrimo/repos/mhp/pfs-il-testing/src/container/.venv'
+          end,
+        },
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -966,7 +1019,26 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'java' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'java',
+        'ninja',
+        'rst',
+        'python',
+        'elixir',
+        'heex',
+        'eex',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -1036,6 +1108,13 @@ require('lazy').setup({
       global_keymaps_prefix = '<leader>R',
       kulala_keymaps_prefix = '',
     },
+  },
+  {
+    'mfussenegger/nvim-dap-python',
+    dependencies = { 'mfussenegger/nvim-dap' },
+    config = function()
+      require('dap-python').setup '/Users/esrimo/repos/mhp/pfs-il-testing/src/container/.venv'
+    end,
   },
   {
     'mfussenegger/nvim-jdtls',
