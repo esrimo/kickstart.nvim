@@ -159,7 +159,7 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 20
+vim.o.scrolloff = 2
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -451,7 +451,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
-      vim.keymap.set('n', '<leader>/', function()
+      vim.keymap.set('n', '<leader>9', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
           winblend = 10,
@@ -509,13 +509,29 @@ require('lazy').setup({
       })
     end,
   },
-
+  -- {
+  --   'neovim/nvim-lspconfig',
+  --   dependencies = {
+  --     'hrsh7th/cmp-nvim-lsp',
+  --   },
+  --   config = function()
+  --     local lspconfig = require 'lspconfig'
+  --     local cmp_nvim_lsp = require 'cmp_nvim_lsp'
+  --
+  --     local capabilities = cmp_nvim_lsp.default_capabilities()
+  --
+  --     lspconfig['mdx_analyzer'].setup {
+  --       filetypes = { 'markdown.mdx', 'mdx' },
+  --       capabilities = capabilities,
+  --     }
+  --   end,
+  -- },
   -- 6) (opt) nvim-lint / Credo
   {
     'mfussenegger/nvim-lint',
     optional = true,
     opts = function(_, opts)
-      opts.linters_by_ft = { elixir = { 'credo' } }
+      opts.linters_by_ft = { elixir = { 'credo', 'markdownlint-cli2' } }
       opts.linters = {
         credo = {
           condition = function(ctx)
@@ -542,7 +558,7 @@ require('lazy').setup({
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
       -- ------------------------------   this ensure_installed is by-esteban
-      { 'mason-org/mason.nvim', opts = { ensure_installed = { 'java-debug-adapter', 'java-test' } } },
+      { 'mason-org/mason.nvim', opts = { ensure_installed = { 'java-debug-adapter', 'java-test', 'markdownlint-cli2', 'markdown-toc' } } },
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
@@ -744,7 +760,40 @@ require('lazy').setup({
         --
 
         -- by-esteban
-
+        html = { filetypes = { 'html', 'templ' } },
+        cssls = {
+          settings = {
+            css = { validate = true },
+            less = { validate = true },
+            scss = { validate = true },
+          },
+        },
+        tailwindcss = {
+          filetypes = { 'html', 'heex', 'eex', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'css' },
+          settings = {
+            tailwindCSS = {
+              experimental = {
+                classRegex = {},
+              },
+            },
+          },
+          root_dir = require('lspconfig').util.root_pattern(
+            'tailwind.config.js',
+            'tailwind.config.cjs',
+            'tailwind.config.ts',
+            'postcss.config.js',
+            'package.json',
+            '.git'
+          ),
+        },
+        emmet_ls = {
+          filetypes = { 'html', 'css', 'scss', 'heex', 'javascriptreact', 'eex', 'typescriptreact' },
+          init_options = {
+            html = { options = { ['bem.enabled'] = true } },
+          },
+        },
+        jsonls = {},
+        marksman = {},
         elixirls = {},
         jdtls = {},
         pyright = {
@@ -787,6 +836,12 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'typescript-language-server',
+        'html-lsp',
+        'css-lsp',
+        'emmet-language-server',
+        'tailwindcss-language-server',
+        'prettierd',
+        'eslint_d',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -843,6 +898,14 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        html = { 'rustywind', 'prettierd', 'prettier' },
+        css = { 'prettierd', 'prettier' },
+        scss = { 'prettierd', 'prettier' },
+        javascript = { 'prettierd', 'prettier' },
+        javascriptreact = { 'prettierd', 'prettier' },
+        typescript = { 'prettierd', 'prettier' },
+        typescriptreact = { 'prettierd', 'prettier' },
+
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -951,28 +1014,69 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
-
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
-    end,
+  -- { -- You can easily change to a different colorscheme.
+  --   -- Change the name of the colorscheme plugin below, and then
+  --   -- change the command in the config to whatever the name of that colorscheme is.
+  --   --
+  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --   'folke/tokyonight.nvim',
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require('tokyonight').setup {
+  --       styles = {
+  --         comments = { italic = false }, -- Disable italics in comments
+  --       },
+  --     }
+  --
+  --     -- Load the colorscheme here.
+  --     -- Like many other themes, this one has different styles, and you could load
+  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     vim.cmd.colorscheme 'tokyonight-night'
+  --   end,
+  -- },
+  {
+    {
+      'rebelot/kanagawa.nvim',
+      name = 'kanagawa',
+      priority = 1000,
+      config = function()
+        require('onedark').setup {
+          transparent = false,
+          dimInactive = false,
+          theme = 'wave',
+          background = {
+            dark = 'dragon', -- wave or lotus (light) is another option
+          },
+        }
+        vim.cmd.colorscheme 'kanagawa-wave'
+      end,
+    },
   },
-
+  {
+    {
+      'navarasu/onedark.nvim',
+      name = 'onedark',
+      priority = 1000,
+      config = function()
+        require('onedark').setup {}
+        -- vim.cmd.colorscheme 'catppuccin-mocha'
+      end,
+    },
+  },
+  {
+    {
+      'catppuccin/nvim',
+      name = 'catppuccin',
+      priority = 1000,
+      config = function()
+        require('catppuccin').setup {
+          -- Your Catppuccin configuration options here
+        }
+        -- vim.cmd.colorscheme 'catppuccin-mocha'
+      end,
+    },
+  },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -1038,6 +1142,10 @@ require('lazy').setup({
         'elixir',
         'heex',
         'eex',
+        'css',
+        'javascript',
+        'typescript',
+        'tsx',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
