@@ -101,6 +101,12 @@ vim.g.have_nerd_font = false
 
 -- Make line numbers default
 vim.o.number = true
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+vim.opt.termguicolors = true
+
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.o.relativenumber = true
@@ -509,6 +515,38 @@ require('lazy').setup({
   },
 
   -- LSP Plugins
+  {
+    'nvim-tree/nvim-tree.lua',
+    version = '*',
+    lazy = false,
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      require('nvim-tree').setup {
+
+        on_attach = function(bufnr)
+          local api = require 'nvim-tree.api'
+
+          local function opts(d)
+            return {
+              desc = 'nvim-tree: ' .. d,
+              buffer = bufnr,
+              noremap = true,
+              silent = true,
+              nowait = true,
+            }
+          end
+
+          api.config.mappings.default_on_attach(bufnr)
+
+          vim.keymap.set('n', '<C-t>', api.tree.change_root_to_parent, opts 'Up')
+          vim.keymap.set('n', '?', api.tree.toggle_help, opts 'Help')
+        end,
+      }
+      vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = 'NvimTreeToggle' })
+    end,
+  },
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
     -- used for completion, annotations and signatures of Neovim apis
