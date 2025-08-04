@@ -186,6 +186,8 @@ vim.filetype.add {
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
+local ops = { noremap = true, silent = true }
+
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -201,11 +203,11 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- TIP: Disable arrow keys in normal mode
-vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+-- Use arrow keys to resize the window splits instead of cursor navigation since this is what hjkl is for...
+vim.keymap.set('n', '<left>', '<cmd>vertical resize -1<CR>')
+vim.keymap.set('n', '<right>', '<cmd>vertical resize +1<CR>')
+vim.keymap.set('n', '<up>', '<cmd>resize +1<CR>')
+vim.keymap.set('n', '<down>', '<cmd>resize -1<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
