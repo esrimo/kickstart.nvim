@@ -302,6 +302,32 @@ require('lazy').setup({
       },
     },
   },
+  {
+    'leath-dub/snipe.nvim',
+    keys = {
+      {
+        'gb',
+        function()
+          require('snipe').open_buffer_menu()
+        end,
+        desc = 'Open Snipe buffer menu',
+      },
+    },
+    opts = {
+      sort = 'last',
+      ui = {
+        position = 'center',
+        text_align = 'file-first',
+      },
+      hints = {
+        dictionary = 'asdf;lkj',
+      },
+      navigate = {
+        -- this does not override the global leader key
+        leader = ',',
+      },
+    },
+  },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
