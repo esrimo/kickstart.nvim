@@ -209,6 +209,16 @@ vim.keymap.set('n', '<right>', '<cmd>vertical resize +1<CR>')
 vim.keymap.set('n', '<up>', '<cmd>resize +1<CR>')
 vim.keymap.set('n', '<down>', '<cmd>resize -1<CR>')
 
+-- shows the error message from the LSP when there's a compile error or somehting
+vim.keymap.set('n', '<leader>ds', vim.diagnostic.open_float, { desc = 'Show Diagnostic Bubble' })
+
+-- will allow to FULLY QUIT NVIM instead of typing :wqa!
+vim.keymap.set('n', '<leader>Q', '<cmd>:qa!<CR>', { desc = 'Quit without saving (:qa!)' })
+vim.keymap.set('n', '<leader>W', '<cmd>:wqa!<CR>', { desc = 'Save & Quit (:wqa!)' })
+
+-- will allow me to open an embedded terminal buffer with more ease
+vim.keymap.set('n', '<leader>ot', '<cmd>:term<CR>', { desc = 'Open Terminal' })
+
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --
@@ -320,11 +330,7 @@ require('lazy').setup({
         text_align = 'file-first',
       },
       hints = {
-        dictionary = 'asdf;lkj',
-      },
-      navigate = {
-        -- this does not override the global leader key
-        leader = ',',
+        dictionary = 'QWERT:LKJ',
       },
     },
   },
@@ -448,6 +454,9 @@ require('lazy').setup({
 
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
+
+      local action_layout = require 'telescope.actions.layout'
+
       require('telescope').setup {
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
@@ -457,8 +466,18 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
+
         defaults = {
-          file_ignore_patterns = { 'node_modules/.*', 'coverage', '__pycache__', '_build' },
+          mappings = {
+            i = {
+              ['<C-p>'] = action_layout.toggle_preview,
+            },
+          },
+          file_ignore_patterns = { 'node_modules/.*', 'coverage', '__pycache__' },
+          layout_config = {
+            vertical = { width = 0.95 },
+            width = 0.95,
+          },
         },
         -- pickers = {}
         extensions = {
@@ -805,7 +824,7 @@ require('lazy').setup({
       -- See :help vim.diagnostic.Opts
       vim.diagnostic.config {
         severity_sort = true,
-        float = { border = 'rounded', source = 'if_many' },
+        float = { border = 'rounded', source = 'if_many', wrap = true, max_width = 80 },
         underline = { severity = vim.diagnostic.severity.ERROR },
         signs = vim.g.have_nerd_font and {
           text = {
@@ -818,6 +837,8 @@ require('lazy').setup({
         virtual_text = {
           source = 'if_many',
           spacing = 2,
+          wrap = true,
+          max_width = 80,
           format = function(diagnostic)
             local diagnostic_message = {
               [vim.diagnostic.severity.ERROR] = diagnostic.message,
@@ -1179,18 +1200,18 @@ require('lazy').setup({
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
-  {
-    'akinsho/bufferline.nvim',
-    version = '*',
-    dependencies = 'nvim-tree/nvim-web-devicons',
-    config = function()
-      require('bufferline').setup {
-        options = {
-          max_name_length = 40,
-        },
-      }
-    end,
-  },
+  -- {
+  --   'akinsho/bufferline.nvim',
+  --   version = '*',
+  --   dependencies = 'nvim-tree/nvim-web-devicons',
+  --   config = function()
+  --     require('bufferline').setup {
+  --       options = {
+  --         max_name_length = 40,
+  --       },
+  --     }
+  --   end,
+  -- },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
