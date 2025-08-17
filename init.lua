@@ -186,6 +186,11 @@ vim.filetype.add {
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
+-- copy file path
+vim.keymap.set('n', '<leader>FF', function()
+  vim.fn.setreg('+', vim.fn.expand '%:p')
+end, { desc = 'Copy File Path' })
+
 local ops = { noremap = true, silent = true }
 
 -- Clear highlights on search when pressing <Esc> in normal mode
@@ -213,8 +218,11 @@ vim.keymap.set('n', '<down>', '<cmd>resize -1<CR>')
 vim.keymap.set('n', '<leader>ds', vim.diagnostic.open_float, { desc = 'Show Diagnostic Bubble' })
 
 -- will allow to FULLY QUIT NVIM instead of typing :wqa!
-vim.keymap.set('n', '<leader>Q', '<cmd>:qa!<CR>', { desc = 'Quit without saving (:qa!)' })
-vim.keymap.set('n', '<leader>W', '<cmd>:wqa!<CR>', { desc = 'Save & Quit (:wqa!)' })
+vim.keymap.set('n', '<leader>Q', '<cmd>confirm quitall<CR>', { desc = 'Quit without saving (:qa!)' })
+vim.keymap.set('n', '<leader>W', '<cmd>confirm quitall<CR>', { desc = 'Save & Quit (:wqa!)' })
+
+-- will just save whatever you're working instead of having to the :w which is turning into a paing in the assssss
+vim.keymap.set('n', '<leader>S', '<cmd>:w!<CR>', { desc = 'Save current buffer' })
 
 -- will allow me to open an embedded terminal buffer with more ease
 vim.keymap.set('n', '<leader>ot', '<cmd>:term<CR>', { desc = 'Open Terminal' })
@@ -571,6 +579,9 @@ require('lazy').setup({
     },
     config = function()
       require('nvim-tree').setup {
+        view = {
+          adaptive_size = true,
+        },
 
         on_attach = function(bufnr)
           local api = require 'nvim-tree.api'
@@ -1133,7 +1144,16 @@ require('lazy').setup({
       signature = { enabled = true },
     },
   },
-
+  {
+    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+    'tiagovla/tokyodark.nvim',
+    priority = 1000, -- Make sure to load this before all the other start plugins.
+    config = function(_, opts)
+      ---@diagnostic disable-next-line: missing-fields
+      require('tokyodark').setup(opts)
+      vim.cmd.colorscheme 'tokyodark'
+    end,
+  },
   -- { -- You can easily change to a different colorscheme.
   --   -- Change the name of the colorscheme plugin below, and then
   --   -- change the command in the config to whatever the name of that colorscheme is.
@@ -1152,51 +1172,52 @@ require('lazy').setup({
   --     -- Load the colorscheme here.
   --     -- Like many other themes, this one has different styles, and you could load
   --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  --     vim.cmd.colorscheme 'tokyonight-night'
+  --     -- vim.cmd.colorscheme 'tokyonight-night'
   --   end,
   -- },
-  {
-    {
-      'rebelot/kanagawa.nvim',
-      name = 'kanagawa',
-      priority = 1000,
-      config = function()
-        require('onedark').setup {
-          transparent = false,
-          dimInactive = false,
-          theme = 'wave',
-          background = {
-            dark = 'dragon', -- wave or lotus (light) is another option
-          },
-        }
-        vim.cmd.colorscheme 'kanagawa-wave'
-      end,
-    },
-  },
-  {
-    {
-      'navarasu/onedark.nvim',
-      name = 'onedark',
-      priority = 1000,
-      config = function()
-        require('onedark').setup {}
-        -- vim.cmd.colorscheme 'catppuccin-mocha'
-      end,
-    },
-  },
-  {
-    {
-      'catppuccin/nvim',
-      name = 'catppuccin',
-      priority = 1000,
-      config = function()
-        require('catppuccin').setup {
-          -- Your Catppuccin configuration options here
-        }
-        -- vim.cmd.colorscheme 'catppuccin-mocha'
-      end,
-    },
-  },
+  -- {
+  --   {
+  --     'rebelot/kanagawa.nvim',
+  --     name = 'kanagawa',
+  --     priority = 1000,
+  --     config = function()
+  --       require('onedark').setup {
+  --         transparent = false,
+  --         dimInactive = true,
+  --         theme = 'wave',
+  --         background = {
+  --           dark = 'dragon', -- wave or lotus (light) is another option
+  --           light = 'dragon',
+  --         },
+  --       }
+  --       vim.cmd.colorscheme 'kanagawa-dragon'
+  --     end,
+  --   },
+  -- },
+  -- {
+  --   {
+  --     'navarasu/onedark.nvim',
+  --     name = 'onedark',
+  --     priority = 1000,
+  --     config = function()
+  --       require('onedark').setup {}
+  --       -- vim.cmd.colorscheme 'catppuccin-mocha'
+  --     end,
+  --   },
+  -- },
+  -- {
+  --   {
+  --     'catppuccin/nvim',
+  --     name = 'catppuccin',
+  --     priority = 1000,
+  --     config = function()
+  --       require('catppuccin').setup {
+  --         -- Your Catppuccin configuration options here
+  --       }
+  --       -- vim.cmd.colorscheme 'catppuccin-mocha'
+  --     end,
+  --   },
+  -- },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
