@@ -222,7 +222,7 @@ vim.keymap.set('n', '<leader>Q', '<cmd>confirm quitall<CR>', { desc = 'Quit with
 vim.keymap.set('n', '<leader>W', '<cmd>confirm quitall<CR>', { desc = 'Save & Quit (:wqa!)' })
 
 -- will just save whatever you're working instead of having to the :w which is turning into a paing in the assssss
-vim.keymap.set('n', '<leader>S', '<cmd>:w!<CR>', { desc = 'Save current buffer' })
+vim.keymap.set('n', '<leader>S', '<cmd>:wall!<CR>', { desc = 'Save all buffers' })
 
 -- will allow me to open an embedded terminal buffer with more ease
 vim.keymap.set('n', '<leader>ot', '<cmd>:term<CR>', { desc = 'Open Terminal' })
@@ -417,6 +417,11 @@ require('lazy').setup({
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
+  {
+    'b0o/SchemaStore.nvim',
+    lazy = true,
+    version = false, -- last release is way too old
+  },
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
@@ -891,6 +896,28 @@ require('lazy').setup({
         --
 
         -- by-esteban
+        yamlls = {
+          capabilities = {
+            textDocument = {
+              foldingRange = {
+                dynamicRegistration = false,
+                lineFoldingOnly = true,
+              },
+            },
+          },
+          on_new_config = function(new_config)
+            new_config.settings.yaml.schemas = vim.tbl_deep_extend('force', new_config.settings.yaml.schemas or {}, require('schemastore').yaml.schemas())
+          end,
+          settings = {
+            redhat = { telemetry = { enabled = false } },
+            yaml = {
+              keyOrdering = false,
+              format = { enable = true },
+              validate = true,
+              schemaStore = { enable = false, url = '' },
+            },
+          },
+        },
         html = { filetypes = { 'html', 'templ' } },
         cssls = {
           settings = {
