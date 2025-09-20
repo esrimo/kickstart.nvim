@@ -896,6 +896,36 @@ require('lazy').setup({
         --
 
         -- by-esteban
+        ts_ls = {
+          settings = {
+            typescript = {
+              preferences = {
+                includeCompletionsForModuleExports = true,
+                includeInlayParameterNameHints = true,
+                includePackageJsonAutoImports = 'on',
+                importModuleSpecifierPreference = 'relative',
+              },
+            },
+            javascript = {
+              preferences = {
+                includeCompletionsForImportStatements = true,
+                includePackageJsonAutoImports = true,
+              },
+            },
+          },
+        },
+        vtsls = {
+          settings = {
+            typescript = {
+              preferences = {
+                includeCompletionsForModuleExports = true,
+                includeInlayParameterNameHints = true,
+                includePackageJsonAutoImports = 'on',
+                importModuleSpecifierPreference = 'relative',
+              },
+            },
+          },
+        },
         yamlls = {
           capabilities = {
             textDocument = {
@@ -1040,20 +1070,23 @@ require('lazy').setup({
     },
     opts = {
       notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 500,
-            lsp_format = 'fallback',
-          }
-        end
+      format_on_save = function()
+        return nil
       end,
+      -- format_on_save = function(bufnr)
+      --   -- Disable "format_on_save lsp_fallback" for languages that don't
+      --   -- have a well standardized coding style. You can add additional
+      --   -- languages here or re-enable it for the disabled ones.
+      --   local disable_filetypes = { c = true, cpp = true }
+      --   if disable_filetypes[vim.bo[bufnr].filetype] then
+      --     return nil
+      --   else
+      --     return {
+      --       timeout_ms = 500,
+      --       lsp_format = 'fallback',
+      --     }
+      --   end
+      -- end,
       formatters_by_ft = {
         lua = { 'stylua' },
         html = { 'rustywind', 'prettierd', 'prettier' },
@@ -1065,14 +1098,13 @@ require('lazy').setup({
         typescriptreact = { 'prettierd', 'prettier' },
 
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'black' }, -- "isort" is another option
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
       },
     },
   },
-
   { -- Autocompletion
     'saghen/blink.cmp',
     event = 'VimEnter',
@@ -1132,6 +1164,8 @@ require('lazy').setup({
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
+        ['<C-CR>'] = { 'show' }, -- trigger suggestions
+        ['<C-Space>'] = false,
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -1144,9 +1178,19 @@ require('lazy').setup({
       },
 
       completion = {
+        menu = {
+          auto_show = true,
+          draw = {
+            columns = {
+              { 'kind_icon' },
+              { 'label', 'label_description', gap = 1, width = { fill = true } },
+              { 'source_name' },
+            },
+          },
+        },
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = false, auto_show_delay_ms = 500 },
+        documentation = { auto_show = true, auto_show_delay_ms = 50 },
       },
 
       sources = {
