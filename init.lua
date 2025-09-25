@@ -1305,6 +1305,24 @@ require('lazy').setup({
   --   end,
   -- },
 
+  {
+    {
+      'Dan7h3x/LazyDo',
+      branch = 'main',
+      cmd = { 'LazyDoToggle', 'LazyDoPin', 'LazyDoToggleStorage' },
+      keys = { -- recommended keymap for easy toggle LazyDo in normal and insert modes (arbitrary)
+        {
+          '<leader>td',
+          '<ESC><CMD>LazyDoToggle<CR>',
+          mode = { 'n' },
+        },
+      },
+      event = 'VeryLazy',
+      opts = {
+        -- your config here
+      },
+    },
+  },
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
