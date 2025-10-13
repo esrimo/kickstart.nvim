@@ -187,9 +187,24 @@ vim.filetype.add {
 --  See `:help vim.keymap.set()`
 
 -- copy file path
+
+-- Running `:TodoQuickFix` will show all todos in the project
+
+vim.keymap.set('n', '<leader>TD', '<cmd>TodoTelescope keywords=TODO<CR>')
+vim.keymap.set('n', '<leader>TF', '<cmd>TodoTelescope keywords=FIX<CR>')
+
 vim.keymap.set('n', '<leader>FF', function()
   vim.fn.setreg('+', vim.fn.expand '%:p')
 end, { desc = 'Copy File Path' })
+
+-- folke / todo-comments plugin keymaps
+vim.keymap.set('n', ']t', function()
+  require('todo-comments').jump_next()
+end, { desc = 'Next todo comment' })
+
+vim.keymap.set('n', '[t', function()
+  require('todo-comments').jump_prev()
+end, { desc = 'Previous todo comment' })
 
 local ops = { noremap = true, silent = true }
 
@@ -1306,23 +1321,11 @@ require('lazy').setup({
   -- },
 
   {
-    {
-      'Dan7h3x/LazyDo',
-      branch = 'main',
-      cmd = { 'LazyDoToggle', 'LazyDoPin', 'LazyDoToggleStorage' },
-      keys = { -- recommended keymap for easy toggle LazyDo in normal and insert modes (arbitrary)
-        {
-          '<leader>td',
-          '<ESC><CMD>LazyDoToggle<CR>',
-          mode = { 'n' },
-        },
-      },
-      event = 'VeryLazy',
-      opts = {
-        -- your config here
-      },
-    },
+    'folke/todo-comments.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = {},
   },
+
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
