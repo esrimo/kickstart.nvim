@@ -193,9 +193,15 @@ vim.filetype.add {
 vim.keymap.set('n', '<leader>TD', '<cmd>TodoTelescope keywords=TODO<CR>')
 vim.keymap.set('n', '<leader>TF', '<cmd>TodoTelescope keywords=FIX<CR>')
 
+vim.keymap.set('n', '<leader>Ff', '<cmd>NvimTreeFindFile<CR>', { desc = 'NvimTreeFindFile' })
+
 vim.keymap.set('n', '<leader>FF', function()
   vim.fn.setreg('+', vim.fn.expand '%:p')
 end, { desc = 'Copy File Path' })
+
+vim.keymap.set('n', '<leader>md', '<cmd>RenderMarkdown toggle<CR>', { desc = 'Toggle Render Markdown' })
+
+-- vim.keymap.set("n", "<C-s>", "<cmd>vsplit | tag <c-r><c-w><cr>", { silent = true })
 
 -- folke / todo-comments plugin keymaps
 vim.keymap.set('n', ']t', function()
@@ -339,7 +345,7 @@ require('lazy').setup({
     'leath-dub/snipe.nvim',
     keys = {
       {
-        'gb',
+        'gm',
         function()
           require('snipe').open_buffer_menu()
         end,
@@ -690,7 +696,16 @@ require('lazy').setup({
       }
     end,
   },
-
+  { 'nvim-mini/mini.nvim', version = false },
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' }, -- if you use standalone mini plugins
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' }, -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
+  },
   -- 7) (opt) Livebook Markdown rendering
   {
     'MeanderingProgrammer/render-markdown.nvim',
@@ -698,6 +713,12 @@ require('lazy').setup({
     ft = function(_, ft)
       return vim.list_extend(ft, { 'livebook' })
     end,
+    config = function()
+      require('render-markdown').setup {
+        completions = { lsp = { enabled = true } },
+      }
+    end,
+    opts = {},
   },
   {
     -- Main LSP Configuration
@@ -911,36 +932,38 @@ require('lazy').setup({
         --
 
         -- by-esteban
-        ts_ls = {
-          settings = {
-            typescript = {
-              preferences = {
-                includeCompletionsForModuleExports = true,
-                includeInlayParameterNameHints = true,
-                includePackageJsonAutoImports = 'on',
-                importModuleSpecifierPreference = 'relative',
-              },
-            },
-            javascript = {
-              preferences = {
-                includeCompletionsForImportStatements = true,
-                includePackageJsonAutoImports = true,
-              },
-            },
-          },
-        },
-        vtsls = {
-          settings = {
-            typescript = {
-              preferences = {
-                includeCompletionsForModuleExports = true,
-                includeInlayParameterNameHints = true,
-                includePackageJsonAutoImports = 'on',
-                importModuleSpecifierPreference = 'relative',
-              },
-            },
-          },
-        },
+        -- ts_ls = {
+        --   settings = {
+        --     typescript = {
+        --       preferences = {
+        --         includeCompletionsForModuleExports = true,
+        --         includeInlayParameterNameHints = true,
+        --         includePackageJsonAutoImports = 'on',
+        --         importModuleSpecifierPreference = 'relative',
+        --       },
+        --     },
+        --     javascript = {
+        --       preferences = {
+        --         includeCompletionsForImportStatements = true,
+        --         includePackageJsonAutoImports = true,
+        --       },
+        --     },
+        --   },
+        -- },
+        vtsls = false,
+        ts_ls = false,
+        -- vtsls = {
+        --   settings = {
+        --     typescript = {
+        --       preferences = {
+        --         includeCompletionsForModuleExports = true,
+        --         includeInlayParameterNameHints = true,
+        --         includePackageJsonAutoImports = 'on',
+        --         importModuleSpecifierPreference = 'relative',
+        --       },
+        --     },
+        --   },
+        -- },
         yamlls = {
           capabilities = {
             textDocument = {
@@ -1451,6 +1474,7 @@ require('lazy').setup({
   },
   {
     'mistweaverco/kulala.nvim',
+    commit = '0d50e9c',
     keys = {
       { '<leader>Rs', desc = 'Send request' },
       { '<leader>Ra', desc = 'Send all requests' },
@@ -1461,6 +1485,7 @@ require('lazy').setup({
       global_keymaps = true,
       global_keymaps_prefix = '<leader>R',
       kulala_keymaps_prefix = '',
+      lsp = { formatter = true },
     },
   },
   {
@@ -1736,6 +1761,9 @@ require('lazy').setup({
     },
   },
 })
+
+-- vim.cmd.hi 'Normal guibg=#2B2B2B' -- set background
+-- vim.cmd.hi 'Comment guifg=#D0D0D0' -- set foreground
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
