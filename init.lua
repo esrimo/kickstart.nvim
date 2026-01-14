@@ -1,4 +1,3 @@
---
 --[[
 
 =====================================================================
@@ -211,8 +210,6 @@ end, { desc = 'Next todo comment' })
 vim.keymap.set('n', '[t', function()
   require('todo-comments').jump_prev()
 end, { desc = 'Previous todo comment' })
-
-local ops = { noremap = true, silent = true }
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -1165,12 +1162,42 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+
+              local luasnip = require 'luasnip'
+
+              vim.keymap.set({ 'i', 's' }, '<Tab>', function()
+                if luasnip.jumpable(1) then
+                  luasnip.jump(1)
+                else
+                  return '<Tab>'
+                end
+              end, { expr = true, silent = true })
+
+              vim.keymap.set({ 'i', 's' }, '<S-Tab>', function()
+                if luasnip.jumpable(-1) then
+                  luasnip.jump(-1)
+                else
+                  return '<S-Tab>'
+                end
+              end, { expr = true, silent = true })
+
+              vim.keymap.set({ 'i', 's' }, '<C-n>', function()
+                if luasnip.choice_active() then
+                  luasnip.change_choice(1)
+                end
+              end, { silent = true })
+
+              vim.keymap.set({ 'i', 's' }, '<C-p>', function()
+                if luasnip.choice_active() then
+                  luasnip.change_choice(-1)
+                end
+              end, { silent = true })
+            end,
+          },
         },
         opts = {},
       },
@@ -1386,6 +1413,15 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+  {
+    'cuducos/yaml.nvim',
+    ft = { 'yaml' }, -- optional
+    dependencies = {
+      'folke/snacks.nvim', -- optional
+      'nvim-telescope/telescope.nvim', -- optional
+      'ibhagwan/fzf-lua', -- optional
+    },
+  },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -1393,6 +1429,7 @@ require('lazy').setup({
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
       ensure_installed = {
+        'yaml',
         'bash',
         'c',
         'diff',
@@ -1426,6 +1463,25 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      -- textobjects = {
+      --   select = {
+      --     enable = true,
+      --     keymaps = {
+      --       ['af'] = '@block.outer',
+      --       ['if'] = '@block.inner',
+      --     },
+      --   },
+      --   move = {
+      --     enable = true,
+      --     set_jumps = true,
+      --     goto_next_start = {
+      --       [']b'] = '@block.outer',
+      --     },
+      --     goto_previous_start = {
+      --       ['[b'] = '@block.outer',
+      --     },
+      --   },
+      -- },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
