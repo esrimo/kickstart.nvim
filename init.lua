@@ -14,6 +14,7 @@ require 'config.globals'
 require 'config.options'
 require 'config.keymaps'
 require 'config.autocmds'
+require 'config.telescope.multigrep'.setup()
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
