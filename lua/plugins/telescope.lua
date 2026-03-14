@@ -43,7 +43,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
             ['<C-p>'] = action_layout.toggle_preview,
           },
         },
-        file_ignore_patterns = { 'node_modules/.*', 'coverage', '__pycache__' },
+        file_ignore_patterns = { 'node_modules/.*', 'coverage', '__pycache__', '_build', 'cdk.out' },
         layout_config = {
           vertical = { width = 0.95 },
           width = 0.95,
