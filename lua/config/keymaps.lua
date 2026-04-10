@@ -4,7 +4,9 @@ vim.keymap.set('n', '<leader>TF', '<cmd>TodoTelescope keywords=FIX<CR>')
 vim.keymap.set('n', '<leader>Ff', '<cmd>NvimTreeFindFile<CR>', { desc = 'NvimTreeFindFile' })
 
 vim.keymap.set('n', '<leader>FF', function()
-  vim.fn.setreg('+', vim.fn.expand '%:p')
+  local file = vim.fn.expand '%:p'
+  local rel = vim.fn.fnamemodify(file, ':.')
+  vim.fn.setreg('+', rel)
 end, { desc = 'Copy File Path' })
 
 vim.keymap.set('n', '<leader>md', '<cmd>RenderMarkdown toggle<CR>', { desc = 'Toggle Render Markdown' })
