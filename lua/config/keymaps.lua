@@ -14,12 +14,13 @@ vim.keymap.set('n', '<leader>md', '<cmd>RenderMarkdown toggle<CR>', { desc = 'To
 -- vim.keymap.set("n", "<C-s>", "<cmd>vsplit | tag <c-r><c-w><cr>", { silent = true })
 
 -- folke / todo-comments plugin keymaps
+
 vim.keymap.set('n', ']t', function()
-  require('todo-comments').jump_next()
-end, { desc = 'Next todo comment' })
+  require('todo-comments').jump_next { keywords = { 'ERROR', 'WARN', 'TODO', 'HACK', 'NOTE' } }
+end, { desc = 'Next comment: ERROR, WARNING, FIX, TODO, HACK, NOTE' })
 
 vim.keymap.set('n', '[t', function()
-  require('todo-comments').jump_prev()
+  require('todo-comments').jump_prev { keywords = { 'ERROR', 'WARN', 'TODO', 'HACK', 'NOTE' } }
 end, { desc = 'Previous todo comment' })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
