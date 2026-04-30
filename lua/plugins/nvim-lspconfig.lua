@@ -297,7 +297,7 @@ return {
       },
       jsonls = {},
       marksman = {},
-      elixirls = {},
+      -- elixirls = {}, -- this has been replaced with expert as a better newer alternative for elixir projects
       jdtls = {},
       pyright = {
         before_init = function(_, config)
