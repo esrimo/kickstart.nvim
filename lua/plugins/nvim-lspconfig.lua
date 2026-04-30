@@ -228,8 +228,7 @@ return {
       --     },
       --   },
       -- },
-      vtsls = false,
-      ts_ls = false,
+      vtsls = {},
       -- vtsls = {
       --   settings = {
       --     typescript = {
@@ -339,7 +338,6 @@ return {
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format Lua code
-      'typescript-language-server',
       'html-lsp',
       'css-lsp',
       'emmet-language-server',
@@ -355,7 +353,7 @@ return {
       handlers = {
         function(server_name)
           -- by-esteban
-          if server_name == 'jdtls' then
+          if server_name == 'jdtls' or srver_name == 'ts_ls' then
             return true
           end
           local server = servers[server_name] or {}
