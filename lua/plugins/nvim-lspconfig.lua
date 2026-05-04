@@ -59,6 +59,31 @@ return {
           vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
         end
 
+        -- organize imports
+        map('<leader>co', function()
+          vim.lsp.buf.code_action { apply = true, context = {
+            only = { 'source.organizeImports' },
+            diagnostics = {},
+          } }
+        end, 'Organize Imports')
+
+        -- add missing imports
+        map('<leader>ci', function()
+          vim.lsp.buf.code_action {
+            apply = true,
+            context = {
+              ---@diagnostic disable-next-line: assign-type-mismatch
+              only = { 'source.addMissingImports.ts' },
+              diagnostics = {},
+            },
+          }
+        end, 'Add Missing Imports')
+
+        -- fix all
+        map('<leader>cf', function()
+          vim.lsp.buf.code_action { apply = true, context = { only = { 'source.fixAll' }, diagnostics = {} } }
+        end, 'Fix all')
+
         -- Rename the variable under your cursor.
         --  Most Language Servers support renaming across files, etc.
         map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
