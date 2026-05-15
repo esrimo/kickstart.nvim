@@ -1,3 +1,4 @@
+-- by Esteban: Will move this to ../../plugins/ when I need to debug for first time
 -- debug.lua
 --
 -- Shows how to use the DAP plugin to debug your code.
