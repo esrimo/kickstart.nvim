@@ -228,8 +228,6 @@ return {
       --     },
       --   },
       -- },
-      vtsls = false,
-      ts_ls = false,
       -- vtsls = {
       --   settings = {
       --     typescript = {
@@ -242,71 +240,49 @@ return {
       --     },
       --   },
       -- },
-      yamlls = {
-        capabilities = {
-          textDocument = {
-            foldingRange = {
-              dynamicRegistration = false,
-              lineFoldingOnly = true,
-            },
-          },
-        },
-        on_new_config = function(new_config)
-          new_config.settings.yaml.schemas = vim.tbl_deep_extend('force', new_config.settings.yaml.schemas or {}, require('schemastore').yaml.schemas())
-        end,
-        settings = {
-          redhat = { telemetry = { enabled = false } },
-          yaml = {
-            keyOrdering = false,
-            format = { enable = true },
-            validate = true,
-            schemaStore = { enable = false, url = '' },
-          },
-        },
-      },
-      html = { filetypes = { 'html', 'templ' } },
-      cssls = {
-        settings = {
-          css = { validate = true },
-          less = { validate = true },
-          scss = { validate = true },
-        },
-      },
-      tailwindcss = {
-        filetypes = { 'html', 'heex', 'eex', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'css' },
-        settings = {
-          tailwindCSS = {
-            experimental = {
-              classRegex = {},
-            },
-          },
-        },
-        root_dir = require('lspconfig').util.root_pattern(
-          'tailwind.config.js',
-          'tailwind.config.cjs',
-          'tailwind.config.ts',
-          'postcss.config.js',
-          'package.json',
-          '.git'
-        ),
-      },
-      emmet_ls = {
-        filetypes = { 'html', 'css', 'scss', 'heex', 'javascriptreact', 'eex', 'typescriptreact' },
-        init_options = {
-          html = { options = { ['bem.enabled'] = true } },
-        },
-      },
-      jsonls = {},
+      -- html = { filetypes = { 'html', 'templ' } },
+      -- cssls = {
+      --   settings = {
+      --     css = { validate = true },
+      --     less = { validate = true },
+      --     scss = { validate = true },
+      --   },
+      -- },
+      -- tailwindcss = {
+      --   filetypes = { 'html', 'heex', 'eex', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'css' },
+      --   settings = {
+      --     tailwindCSS = {
+      --       experimental = {
+      --         classRegex = {},
+      --       },
+      --     },
+      --   },
+      --   root_dir = require('lspconfig').util.root_pattern(
+      --     'tailwind.config.js',
+      --     'tailwind.config.cjs',
+      --     'tailwind.config.ts',
+      --     'postcss.config.js',
+      --     'package.json',
+      --     '.git'
+      --   ),
+      -- },
+      -- emmet_ls = {
+      --   filetypes = { 'html', 'css', 'scss', 'heex', 'javascriptreact', 'eex', 'typescriptreact' },
+      --   init_options = {
+      --     html = { options = { ['bem.enabled'] = true } },
+      --   },
+      -- },
+      -- jsonls = {},
       marksman = {},
-      elixirls = {},
-      jdtls = {},
-      pyright = {
-        before_init = function(_, config)
-          config.settings = config.settings or {}
-          config.settings.python = config.settings.python or {}
-          config.settings.python.pythonPath = '/Users/esrimo/repos/mhp/pfs-il-testing/src/container/.venv'
-        end,
-      },
+      -- elixirls = {},
+      -- jdtls = {},
+      -- pyright = {
+      --   before_init = function(_, config)
+      --     config.settings = config.settings or {}
+      --     config.settings.python = config.settings.python or {}
+      --     config.settings.python.pythonPath = '/Users/esrimo/repos/mhp/pfs-il-testing/src/container/.venv'
+      --   end,
+      -- },
       lua_ls = {
         -- cmd = { ... },
         -- filetypes = { ... },
@@ -339,13 +315,13 @@ return {
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format Lua code
-      'typescript-language-server',
-      'html-lsp',
-      'css-lsp',
+      -- 'typescript-language-server',
+      -- 'html-lsp',
+      -- 'css-lsp',
       'emmet-language-server',
-      'tailwindcss-language-server',
-      'prettierd',
-      'eslint_d',
+      -- 'tailwindcss-language-server',
+      -- 'prettierd',
+      -- 'eslint_d',
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
