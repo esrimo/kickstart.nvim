@@ -378,7 +378,7 @@ return {
       handlers = {
         function(server_name)
           -- by-esteban
-          if server_name == 'jdtls' or srver_name == 'ts_ls' then
+          if server_name == 'jdtls' or server_name == 'ts_ls' then
             return true
           end
           local server = servers[server_name] or {}
